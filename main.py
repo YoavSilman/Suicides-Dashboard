@@ -170,26 +170,6 @@ def main():
     if selected_section == "Overview":
         display_overview(filtered_gender, data)
     elif selected_section == "Age Analysis":
-        # Get the age group with maximum suicides
-        age_cols = ['<14', '15-17', '18-21', '22-24', '25-44', '45-64', '65-74', '75+']
-        age_gender_data = data['suicides_age_gender'].copy()
-        age_gender_data['year'] = pd.to_numeric(age_gender_data['year'], errors='coerce')
-        filtered_data = age_gender_data[(age_gender_data['year'] >= start_year) &
-                                        (age_gender_data['year'] <= end_year) &
-                                        (age_gender_data['group'] == 'all')]
-
-        avg_by_age = filtered_data[age_cols].mean()
-        max_suicide_age_group = avg_by_age.idxmax()
-
-        st.markdown("## Age Groups for Analysis")
-        st.markdown("Select age groups for in-depth analysis:")
-
-        selected_age_groups = st.multiselect(
-            "Select Age Groups",
-            options=age_cols,
-            default=[max_suicide_age_group],
-            help="The age group with the highest suicide rate is selected by default. You can select additional groups."
-        )
         display_age_analysis(data, start_year, end_year, selected_age_groups)
     elif selected_section == "Demographic Analysis":
         display_demographic_analysis(data, start_year, end_year)
@@ -330,9 +310,6 @@ def display_age_analysis(data, start_year, end_year, selected_age_groups=None):
     # Sort by suicide count in descending order
     avg_by_age_df = avg_by_age_df.sort_values(by='Average Suicides', ascending=True)
 
-    # Create a color list - red for the first bar, blue for the rest
-    colors = ['#1f77b4'] * (len(avg_by_age_df) - 1) + ['red']
-
     # Create horizontal bar chart
     st.markdown("### Suicide Distribution by Age Group")
 
@@ -344,9 +321,6 @@ def display_age_analysis(data, start_year, end_year, selected_age_groups=None):
                  template='plotly_white',
                  text='Average Suicides')
 
-    # Update bar colors - first bar red, others default blue
-    for i, bar in enumerate(fig.data[0].marker.color):
-        fig.data[0].marker.color = colors
 
     # Configure text display
     fig.update_traces(texttemplate='%{text:.1f}', textposition='outside')
@@ -368,6 +342,27 @@ def display_age_analysis(data, start_year, end_year, selected_age_groups=None):
     # Use the full container width
     st.plotly_chart(fig, use_container_width=True)
 
+    # Get the age group with maximum suicides
+    age_cols = ['<14', '15-17', '18-21', '22-24', '25-44', '45-64', '65-74', '75+']
+    age_gender_data = data['suicides_age_gender'].copy()
+    age_gender_data['year'] = pd.to_numeric(age_gender_data['year'], errors='coerce')
+    filtered_data = age_gender_data[(age_gender_data['year'] >= start_year) &
+                                    (age_gender_data['year'] <= end_year) &
+                                    (age_gender_data['group'] == 'all')]
+
+    avg_by_age = filtered_data[age_cols].mean()
+    max_suicide_age_group = avg_by_age.idxmax()
+
+    st.markdown("## Age Groups for Analysis")
+    st.markdown("Select age groups for in-depth analysis:")
+
+    selected_age_groups = st.multiselect(
+        "Select Age Groups",
+        options=age_cols,
+        default=[max_suicide_age_group],
+        help="The age group with the highest suicide rate is selected by default. You can select additional groups."
+    )
+
     # Add tip after the graph
     st.markdown("""
     💡 **Tip**: Select age groups in the side menu for in-depth analysis.
@@ -375,9 +370,6 @@ def display_age_analysis(data, start_year, end_year, selected_age_groups=None):
 
     # Display selected age groups or prompt to select
     if selected_age_groups and len(selected_age_groups) > 0:
-        st.markdown("### Selected Age Groups for In-Depth Analysis")
-        st.write(f"Selected age groups: {', '.join(selected_age_groups)}")
-
         # Create a divider
         st.markdown("---")
 
