@@ -1011,34 +1011,7 @@ def display_demographic_analysis(data, start_year, end_year):
     fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[1]))
 
     st.plotly_chart(fig, use_container_width=True)
-
-    # st.markdown("""
-    # **Key observations:**
-    # - Former USSR immigrants consistently represent the largest proportion of both suicide attempts and completions
-    # - Ethiopian immigrants show a higher percentage in completed suicides compared to their representation in attempts
-    # - The "Others" category represents a smaller proportion of both attempts and completions
-    # - There is year-to-year variation in the proportions, particularly in completed suicides
-    # """)
-
-    # Right Chart: Suicide Rates by Gender and Ethnicity
-    # with col2:
-    #     st.markdown("### Suicide Rates by Gender and Ethnicity")
-    #
-    #     if "year" in gender_ethnicity_filtered.columns and "Men" in gender_ethnicity_filtered.columns and "Women" in gender_ethnicity_filtered.columns:
-    #         gender_ethnicity_chart = px.line(
-    #             gender_ethnicity_filtered, x='year', y=['Men', 'Women'],
-    #             title='Suicide Rates by Gender and Ethnicity',
-    #             markers=True,
-    #             labels={'year': 'Year', 'value': 'Suicide Rate', 'variable': 'Gender'},
-    #             template='plotly_white'
-    #         )
-    #         gender_ethnicity_chart = update_fig_layout(gender_ethnicity_chart)
-    #         st.plotly_chart(gender_ethnicity_chart, use_container_width=True)
-    #     else:
-    #         st.warning("No valid data available for gender-based suicide rates.")
-
-
-
+    
 def display_time_trends(data, start_year, end_year):
     st.markdown('<h2 class="sub-header">Yearly Trends Analysis</h2>', unsafe_allow_html=True)
     st.markdown("""
